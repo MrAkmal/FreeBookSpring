@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments.html :: head('Book Delete Page')"></head>
+<body>
+<header th:include="fragments.html :: navbar"></header>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-6 offset-3">
+                <p class="h4" th:text="${book.name}"></p>
+                <p class="h4" th:text="${book.author}"></p>
+                <p class="h4" th:text="${book.pageCount}"></p>
+                <p>Are You Sure</p>
+                <form th:action="@{/book/delete/{book_id}(book_id=${book.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Yes</button>
+                    <a th:href="@{/book/list/}" class="btn btn-warning">No</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</main>
+<footer></footer>
+<section th:include="fragments.html :: js_sources"></section>
+</body>
+</html>

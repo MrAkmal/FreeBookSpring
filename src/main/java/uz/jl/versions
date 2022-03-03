@@ -1,0 +1,77 @@
+package uz.jl.controllers;
+
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import uz.jl.models.Book;
+
+import java.util.*;
+
+
+@Controller
+@RequestMapping("/book/*")
+public class BookController {
+
+    List<Book> books = new ArrayList<>();
+
+    {
+        books.add(new Book("CV", "Muhammad Jafar", 2));
+        books.add(new Book("Mehrobdan Chayon", "Abdulla Qodiriy", 456));
+        books.add(new Book("Dunyoning Ishlari", "O'tkir Hoshimov", 456));
+    }
+
+    @RequestMapping(value = "create/", method = RequestMethod.POST)
+    public String createPage(@ModelAttribute Book book) {
+        book.setId(UUID.randomUUID());
+        books.add(book);
+        return "redirect:/book/list/";
+    }
+
+    /*@RequestParam(required = false, name = "username") String username*/
+    @RequestMapping(value = "delete/{book_id}", method = RequestMethod.GET)
+    public String deletePage(Model model, @PathVariable(name = "book_id") String id) {
+        Optional<Book> bookOptional = books.stream()
+                .filter(book -> book.getId().toString().equals(id)).findFirst();
+        if (bookOptional.isEmpty())
+            throw new RuntimeException("Book Not Found with id '%s'".formatted(id));
+        //if (bookOptional.isEmpty()) {
+        //    model.addAttribute("time", new Date());
+        //    model.addAttribute("message", "Book Not Found with id '%s'".formatted(id));
+        //    return "error/404";
+        //}
+        Book book = bookOptional.get();
+        model.addAttribute("book", book);
+        return "book/delete";
+    }
+
+
+    //@ExceptionHandler({RuntimeException.class})
+    //@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    //public String error404(Model model,RuntimeException e) {
+    //    model.addAttribute("time", new Date());
+    //    model.addAttribute("message", e.getMessage());
+    //    return "error/404";
+    //}
+
+
+    @RequestMapping(value = "delete/{book_id}", method = RequestMethod.POST)
+    public String delete(@PathVariable(name = "book_id") UUID id) {
+        books.removeIf(book -> book.getId().equals(id));
+        return "redirect:/book/list/";
+    }
+
+    @RequestMapping(value = "update/", method = RequestMethod.GET)
+    public String updatePage() {
+        return "book/update";
+    }
+
+    @RequestMapping(value = "list/", method = RequestMethod.GET)
+    public ModelAndView listPage(ModelAndView modelAndView) {
+        modelAndView.setViewName("book/list");
+        modelAndView.addObject("books", books);
+        return modelAndView;
+    }
+}

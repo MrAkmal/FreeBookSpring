@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments.html :: head('Book List Page')"></head>
+<body>
+<header th:include="fragments.html :: navbar"></header>
+
+<section th:include="popups.html :: create_book"></section>
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-10 mx-auto">
+                <h1 class="h1">Book List Page</h1>
+                <ul class="list-unstyled" th:each="book ,iter : ${books}">
+                    <li class="media m-4" style="border: #3a3636 2px solid; border-radius: 10px">
+
+                        <img class="mr-3" width="120" height="180" th:src="@{${book.coverPath}}"
+                             th:alt="${book.coverPath}"/>
+
+
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1" th:text="${book.name}"></h5>
+                            <p>Description : <span th:text="${book.description}"></span></p>
+                            <p>Size :<span th:text="${book.uploads.size}"> </span> </p>
+                            <p>Mime Type :<span th:text="${book.uploads.contentType}"></span></p>
+
+                            <a class="btn btn-primary" th:href="${book.uploads.path}" th:text="Download"></a>
+                            <a th:href="@{/book/delete/{book_id}(book_id=${book.id})}" th:text="Delete" method="get"></a>
+                            <a class="btn btn-primary" th:href="@{'/book/update/'+${book.id}}" th:text="Update"></a>
+                            <a class="btn btn-primary" th:href="@{'/book/delete/'+${book.id}}" th:text="Delete"></a>
+                            <a class="btn btn-primary" th:href="@{'/book/detail/'+${book.id}}" th:text="Details"></a>
+                        </div>
+                    </li>
+
+                </ul>
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <li class="page-item disabled">
+                            <span class="page-link">Previous</span>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item active">
+                              <span class="page-link">
+                                2
+                                <span class="sr-only">(current)</span>
+                              </span>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+                <button class="btn btn-success mr-auto" data-toggle="modal" data-target="#exampleModal">
+                    Add Book
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+<footer></footer>
+<section th:include="fragments.html :: js_sources"></section>
+</body>
+</html>
